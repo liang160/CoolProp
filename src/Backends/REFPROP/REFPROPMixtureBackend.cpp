@@ -601,29 +601,25 @@ void REFPROPMixtureBackend::set_binary_interaction_double(const std::size_t i, c
     // Get the prior state
     GETKTVdll(&icomp, &jcomp, hmodij, fij, hfmix, hfij, hbinp, hmxrul, 3, 255, 255, 255, 255);
 
-    std::string shmodij(hmodij);
-    if (shmodij.find("KW") == 0 || shmodij.find("GE") == 0)  // Starts with KW or GE
-    {
-        if (parameter == "betaT") {
-            fij[0] = value;
-        } else if (parameter == "gammaT") {
-            fij[1] = value;
-        } else if (parameter == "betaV") {
-            fij[2] = value;
-        } else if (parameter == "gammaV") {
-            fij[3] = value;
-        } else if (parameter == "Fij") {
-            fij[4] = value;
-        } else {
-            throw ValueError(format("I don't know what to do with your parameter [%s]", parameter.c_str()));
-        }
-        SETKTVdll(&icomp, &jcomp, hmodij, fij, hfmix, &ierr, herr, 3, 255, 255);
-        if (ierr > get_config_int(REFPROP_ERROR_THRESHOLD)) {
-            throw ValueError(format("Unable to set parameter[%s] to value[%g]: %s", parameter.c_str(), value, herr));
-        }
+    std::string shmodij(hmodij);    
+    if (parameter == "betaT") {
+        fij[0] = value;
+    } else if (parameter == "gammaT") {
+        fij[1] = value;
+    } else if (parameter == "betaV") {
+        fij[2] = value;
+    } else if (parameter == "gammaV") {
+        fij[3] = value;
+    } else if (parameter == "Fij") {
+        fij[4] = value;
     } else {
-        throw ValueError(format("For now, model [%s] must start with KW or GE", hmodij));
+        throw ValueError(format("I don't know what to do with your parameter [%s]", parameter.c_str()));
     }
+    SETKTVdll(&icomp, &jcomp, hmodij, fij, hfmix, &ierr, herr, 3, 255, 255);
+    if (ierr > get_config_int(REFPROP_ERROR_THRESHOLD)) {
+        throw ValueError(format("Unable to set parameter[%s] to value[%g]: %s", parameter.c_str(), value, herr));
+    }
+   
 }
 
 /// Get binary mixture double value (EXPERT USE ONLY!!!)
